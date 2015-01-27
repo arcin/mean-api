@@ -3,7 +3,9 @@
 /***************/
 /* require necessary modules for application, database, and http connectivity */
 /* require body-parser and morgan for incoming requests and better logging */
+/* require errorhandler for a better looking response in the case of an error */
 var express = require('express')
+var errorHandler = require('errorhandler')
 var mongoose = require('mongoose')
 var http = require('http')
 var bodyParser = require('body-parser')
@@ -24,9 +26,23 @@ var dbConnection = mongoose.createConnection(dbUri)
  * Schema constructor, which takes the name of a property and its datatype.
  */
 var Schema = mongoose.Schema
+/*
+ * Any fields that are not present in the schema declaration will be ignored when
+ * persisting and object to the database
+ */
 var postSchema = new Schema ({
-  title: String,
-  text: String
+  /*
+   * Mongoose schema allows you to specify options for any given field.
+   */
+  title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  text: {
+    type: String,
+    required: true
+  }
 })
 
 /*
@@ -106,6 +122,12 @@ app.post('/posts', function(req, res, next){
     res.send(results)
   })
 })
+
+/*
+ * Simple error handling middleware used to format the descriptive
+ * error message returned by the server
+ */
+app.use(errorHandler())
 
 /*
  * Start the server
