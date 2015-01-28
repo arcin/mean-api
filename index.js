@@ -114,12 +114,20 @@ app.post('/posts', function(req, res, next){
   post = new Post(req.body)
 
   /*
-   * Then you call save() on that object to persist it to the database.
-   * The callback will return the error or the results of the query.
+   * Model instances in mongoose have validation methods,
+   * allowing you to throw errors and avoid saving while
+   * returning a useful message to the user
    */
-  post.save(function(error, results){
+  post.validate(function(error){
     if (error) return next(error)
-    res.send(results)
+    /*
+    * Then you call save() on that object to persist it to the database.
+    * The callback will return the error or the results of the query.
+    */
+    post.save(function(error, results){
+      if (error) return next(error)
+      res.send(results)
+    })
   })
 })
 
