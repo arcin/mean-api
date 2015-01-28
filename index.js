@@ -37,10 +37,43 @@ var postSchema = new Schema ({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    /*
+     * You can add advanced format restrictions to String fields using match and
+     * regular expressions.
+     *
+     * This will only allow a word with the listed characters and between the length
+     * of 1 and 100
+     */
+    match: /^([\w ,.!?]{1,100})$/
   },
   text: {
     type: String,
+    required: true,
+    /*
+     * You can add a maximum or minimum character length
+     */
+    max: 2000
+  },
+  /*
+   * You can mix and match flavors of field declarations. This one just lists
+   * the datatype, while the above examples have an options hash.
+   */
+  viewCounter: Number,
+  published: Boolean,
+  /*
+   * Mongoose gives you the `default` property that you can add during schema definition.
+   * This property will be given to the model if the field is not populated when writing
+   * to the database
+   */
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
     required: true
   }
 })
