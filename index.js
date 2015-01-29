@@ -56,6 +56,45 @@ var postSchema = new Schema ({
     max: 2000
   },
   /*
+   * Mongoose supports arrays as part of schema definition. This code denotes
+   * an association where a `foreign key` is being stored. This key will likely
+   * be used later to retrieve a model instance.
+   */
+  followers: [Schema.Types.ObjectId],
+  /*
+   * When using Schema.Types.Mixed, you are saying that you don't know or don't
+   * car what kind of data you are storing. This is great for third party api's
+   * that send you valuable meta data.
+   *
+   * The downfall is that mongoose cannot detect the type of data being stored.
+   * This causes problems when trying to update/change that data because mongo
+   * will not know what it needs to save them.
+   */
+  meta: Schema.Types.Mixed,
+  /*
+   * This is an example of declaring complex and detailed schema structures.
+   *
+   * Posts have comments and each comment will have an author.
+   */
+  comments: [{
+    text: {
+      type: String,
+      trime: true,
+      max: 2000
+    },
+    author: {
+      /*
+       * `ref` here is used to define what Model mongoose will reference when
+       * using the objectid.
+       */
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      name: String
+    }
+  }],
+  /*
    * You can mix and match flavors of field declarations. This one just lists
    * the datatype, while the above examples have an options hash.
    */
